@@ -1,0 +1,42 @@
+[package]
+name = "iron_test"
+version = "0.1.0"
+authors = ["IsseiFUJIMOTO <otomijuf.004@gmail.com>"]
+build = "build.rs"
+
+
+[dependencies.iron]
+version = "*"
+
+[dependencies.router]
+version = "*"
+
+[dependencies.mount]
+version = "*"
+
+[dependencies.staticfile]
+version = "*"
+
+[dependencies.params]
+version = "*"
+
+[dependencies.iron_diesel_middleware]
+git = "https://github.com/darayus/iron-diesel-middleware"
+
+[dependencies]
+iron-sessionstorage = { version = "^0.6.6", git = "https://github.com/iron/iron-sessionstorage.git" }
+
+serde = "0.9"
+serde_json = "0.9"
+serde_derive = "0.9"
+
+rustc-serialize = "0.3"
+
+chrono = { version = "0.4.0", features = ["serde","rustc-serialize"] }
+askama = "0.5"
+diesel = { version = "1.0.0", features = ["mysql","chrono"] }
+dotenv = "*"
+
+
+[build-dependencies]
+askama = "0.5"
