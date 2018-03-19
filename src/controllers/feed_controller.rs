@@ -54,6 +54,7 @@ pub fn text_list(req: &mut Request) -> IronResult<Response> {
 #[derive(RustcEncodable, RustcDecodable)]
 struct Post{
     p_title_id:i64,
+    parent_id:i32,
     p_body:String,
     p_author:String,
 }
@@ -73,7 +74,6 @@ pub fn insert(req: &mut Request) -> IronResult<Response> {
 
     let mut payload = String::new();
 
-
     match req.body.read_to_string( & mut payload){
         Err(e) => Ok(Response::with((status::Ok, "read failed"))),
         Ok(n) => {
@@ -81,21 +81,11 @@ pub fn insert(req: &mut Request) -> IronResult<Response> {
                 Err(e) => Ok(Response::with((status::Ok, "bind failed"))),
                 Ok(post) => {
                     let post:Post = post;
-                    let text_body:Vec<Text> = text.load::<Text>(&*con).expect("Error reading DB");
-
-                    let text_list = text_body.iter().filter(| e| {
-                        e.title_id == post.p_title_id
-                    });
-
-                    let max_sequence = text_list.map(| e| {
-                        e.sequence
-                    }).max();
-
                     let new_text = NewText {
                         title_id:post.p_title_id,
                         body:&post.p_body,
                         author:&post.p_author,
-                        sequence:max_sequence.map(|e| e+1).unwrap(),
+                        parent_id:post.parent_id,
                         created_at:&get_time::get_time(),
                         updated_at:&get_time::get_time(),
                     };
@@ -105,8 +95,8 @@ pub fn insert(req: &mut Request) -> IronResult<Response> {
                         Ok(_) => {
                             Ok(Response::with((status::Ok,"insert success")))
                         },
-                        Err(_) => {
-                            Ok(Response::with((status::Ok, "insert failed")))
+                        Err(e) => {
+                            Ok(Response::with((status::Ok, e.to_string())))
                         }
                     }
 
