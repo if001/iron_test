@@ -15,7 +15,10 @@ use rustc_serialize::json;
 use controllers::get_time;
 
 
-
+//todo serviceとかにまとめる
+pub fn response_json(status:i32, content:&str) -> String{
+    [r#"{"status":"#, status.to_string().as_str(), r#","content":"#, content, "}" ].concat()
+}
 
 
 pub fn title_list(req: &mut Request) -> IronResult<Response> {
@@ -27,7 +30,7 @@ pub fn title_list(req: &mut Request) -> IronResult<Response> {
     match title.load::<Title>(&*con){
         Ok(title_body) => {
             let j = json::encode(&title_body).unwrap();
-            Ok(Response::with((status::Ok,j)))
+            Ok(Response::with((status::Ok,response_json(200, &j))))
         }
         Err(_) => Ok(Response::with((status::Ok,"Error reading DB")))
     }
@@ -44,7 +47,7 @@ pub fn text_list(req: &mut Request) -> IronResult<Response> {
     match text.load::<Text>(&*con){
         Ok(text_body) => {
             let j = json::encode(&text_body).unwrap();
-            Ok(Response::with((status::Ok,j)))
+            Ok(Response::with((status::Ok,response_json(200, &j))))
         }
         Err(_) => Ok(Response::with((status::Ok,"Error reading DB")))
     }
