@@ -26,6 +26,8 @@ git = "https://github.com/darayus/iron-diesel-middleware"
 [dependencies]
 iron-sessionstorage = { version = "^0.6.6", git = "https://github.com/iron/iron-sessionstorage.git" }
 
+iron-cors="*"
+
 serde = "0.9"
 serde_json = "0.9"
 serde_derive = "0.9"
