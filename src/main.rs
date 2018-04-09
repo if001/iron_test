@@ -21,8 +21,6 @@ use mount::Mount;
 use staticfile::Static;
 use iron_sessionstorage::SessionStorage;
 use iron_sessionstorage::backends::SignedCookieBackend;
-
-
 extern crate rustc_serialize;
 
 extern crate serde;
@@ -34,6 +32,11 @@ extern crate chrono;
 
 mod db;
 mod controllers;
+
+
+extern crate iron_cors;
+use iron_cors::CorsMiddleware;
+
 
 fn main() {
     //let csrf_middleware = CsrfMiddleware::new("hogehoge");
@@ -52,8 +55,13 @@ fn main() {
     let my_secret = b"fugafuga".to_vec();
 
     let mut chain = Chain::new(mount);
+
+
     chain.link_before(diesel_middleware);
+    let cors_middleware = CorsMiddleware::with_allow_any();
+    chain.link_around(cors_middleware);
     chain.link_around(SessionStorage::new(SignedCookieBackend::new(my_secret)));
 
-    Iron::new(chain).http("localhost:3000").unwrap();
+
+    Iron::new(chain).http("localhost:3131").unwrap();
 }
