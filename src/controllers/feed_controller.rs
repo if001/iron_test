@@ -49,8 +49,9 @@ pub fn text_list(req: &mut Request) -> IronResult<Response> {
             let j = json::encode(&text_body).unwrap();
             Ok(Response::with((status::Ok,response_json(200, &j))))
         }
-        Err(_) => Ok(Response::with((status::Ok,"Error reading DB")))
+        Err(_) => Ok(Response::with((status::Ok,response_json(200,"Error reading DB"))))
     }
+
 }
 
 
@@ -96,10 +97,10 @@ pub fn insert(req: &mut Request) -> IronResult<Response> {
                         .values(&new_text)
                         .execute(&*con) {
                         Ok(_) => {
-                            Ok(Response::with((status::Ok,"insert success")))
+                            Ok(Response::with((status::Ok,response_json(200,"insert success"))))
                         },
                         Err(e) => {
-                            Ok(Response::with((status::Ok, e.to_string())))
+                            Ok(Response::with((status::Ok,response_json(200, &e.to_string()))))
                         }
                     }
 
@@ -127,14 +128,12 @@ pub fn insert_title(req: &mut Request) -> IronResult<Response> {
     use db::models::NewText;
 
 
-    //let params = req.get_ref::<Params>().unwrap();
-
     match req.get_ref::<Params>() {
-        Err(e) => {Ok(Response::with((status::Ok, e.to_string()))) },
+        Err(e) => {Ok(Response::with((status::Ok, response_json(200,&e.to_string())))) },
         Ok(params) => {
             match params.find(&["name"]){
                 _ => {
-                    Ok(Response::with((status::NotFound, "not found")))
+                    Ok(Response::with((status::NotFound, response_json(200,"not found"))))
                 },
                 Some(&Value::String( ref name)) => {
                     let new_title = NewTitle{
@@ -146,7 +145,7 @@ pub fn insert_title(req: &mut Request) -> IronResult<Response> {
                         .values( & new_title)
                         .execute( & *con)
                         .expect("INSERT failed");
-                    Ok(Response::with((status::Ok, "insert")))
+                    Ok(Response::with((status::Ok, response_json(200,"insert"))))
                 }
             }
         },
