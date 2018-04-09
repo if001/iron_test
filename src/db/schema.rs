@@ -12,8 +12,9 @@ table!{
      text (id) {
         id -> BigInt,
         title_id -> BigInt,
-        sequence -> Integer,
+        parent_id -> Integer,
         body -> Text,
+        author -> Varchar,
         created_at ->  Datetime,
         updated_at -> Datetime,
     }
